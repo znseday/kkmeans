@@ -11,7 +11,12 @@
 
 //#include <dlib/clustering.h>
 
+#if ((defined WIN32) || (defined WIN64))
 #include "C:/dlib-19.19/dlib-19.19/dlib/clustering.h"
+#else
+    #include <dlib/clustering.h>
+    #include <dlib/rand.h>
+#endif
 
 
 // __FUNCSIG__ is for VS, but Qt (mingw) works with __PRETTY_FUNCTION__
