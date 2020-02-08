@@ -18,12 +18,12 @@ target_link_libraries(kkmeans
 
 if(WIN32 OR WIN64)
     set_target_properties(kkmeans PROPERTIES
-            CXX_STANDARD 17
+            CXX_STANDARD 14
             CXX_STANDARD_REQUIRED ON
 			COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra")
 else()
     set_target_properties(kkmeans PROPERTIES
-            CXX_STANDARD 17
+            CXX_STANDARD 14
             CXX_STANDARD_REQUIRED ON
             COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra")
 
