@@ -109,7 +109,7 @@ void Task::LoadDataFromInputStream()
     while (getline(i_stream, line))
     {
         double x, y;
-        sscanf(line.c_str(), "%f;%f", &x, &y);
+        sscanf(line.c_str(), "%lf;%lf", &x, &y);
         data.emplace_back(x, y);
 
         MY_DEBUG_ONLY( cout << line << endl; ) // just echo
