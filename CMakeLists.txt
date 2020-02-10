@@ -12,6 +12,24 @@ find_package(Threads)
 
 add_executable(kkmeans main.cpp kkmeans.cpp kkmeans.h)
 
+if(WIN32 OR WIN64)
+   set(DLIB_DIR "C:\\dlib-19.19\\dlib-19.19\\dlib")
+   set(DLIB_INCLUDE "C:\\dlib-19.19\\dlib-19.19\\dlib")
+
+   # find_package(dlib)
+
+   #set(dlib_DIR "C:\\dlib-19.19\\dlib-19.19\\dlib")
+
+   target_link_libraries(kkmeans openblas)
+   target_link_libraries(kkmeans dlib)
+
+
+else()
+    target_link_libraries(kkmeans openblas)
+    target_link_libraries(kkmeans dlib)
+
+endif()
+
 target_link_libraries(kkmeans
     ${CMAKE_THREAD_LIBS_INIT}
 )
