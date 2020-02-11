@@ -193,7 +193,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
                 cout << "y > 199" << endl;
         )
 
-        MY_DEBUG_ONLY( if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
+        MY_DEBUG_ONLY( if ( (h-y-1)*w*3 + x*3 + 2 > (int)bmpHeader.SizeImage )
             cout << "points:  (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl; )
 
         int res = test(sample);
@@ -219,8 +219,6 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     //f_bmp_points.flush();
     f_bmp_points.close();
 
-
-    //ofstream f_bmp("result_all.bmp", ios::out | ios::binary);
     fstream f_bmp_all("result_all.bmp", ios::out | ios::binary);
     f_bmp_all.write((const char*)&bmpHeader, sizeof(bmpHeader));
     memset(buff, 0, bmpHeader.SizeImage);
@@ -229,7 +227,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     {
         for (int x = 0; x < w; x++)
         {
-            MY_DEBUG_ONLY (if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
+            MY_DEBUG_ONLY (if ( (h-y-1)*w*3 + x*3 + 2 > (int)bmpHeader.SizeImage )
                 cout << "all: (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl; )
 
             m(0) = x-100;

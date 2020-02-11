@@ -52,6 +52,7 @@ struct bmpHeaderType
     uint32_t  ColorImportant; // 0
 };
 
+
 class Task
 {
 private:
