@@ -183,12 +183,12 @@ void Task::TrainAndDo()
 //        int res = test(sample);
 //    }
 
-    for (int y = -100; y < h; y++)
+    for (int y = 0; y < h; y++)
     {
-        for (int x = -100; x < w; y++)
+        for (int x = 0; x < w; y++)
         {
-            m(0) = x;
-            m(1) = y;
+            m(0) = x-100;
+            m(1) = y-100;
             int res = test(m);
             switch(res)
             {
