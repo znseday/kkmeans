@@ -173,7 +173,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     unsigned char *buff = new unsigned char[bmpHeader.SizeImage];
 
     fstream f_bmp_points("result_points.bmp", ios::out | ios::binary);
-    memset(buff, 127, bmpHeader.SizeImage);
+    memset(buff, 0, bmpHeader.SizeImage);
 
     f_bmp_points.write((const char*)&bmpHeader, sizeof(bmpHeader));
 
@@ -182,17 +182,19 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
         int x = 100 + (int)sample(0);
         int y = 100 + (int)sample(1);
 
-        if (x < 0)
-            cout << "x < 0" << endl;
-        if (y < 0)
-            cout << "y < 0" << endl;
-        if (x > 199)
-            cout << "x > 199" << endl;
-        if (y > 199)
-            cout << "y > 199" << endl;
+        MY_DEBUG_ONLY(
+            if (x < 0)
+                cout << "x < 0" << endl;
+            if (y < 0)
+                cout << "y < 0" << endl;
+            if (x > 199)
+                cout << "x > 199" << endl;
+            if (y > 199)
+                cout << "y > 199" << endl;
+        )
 
-        if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
-            cout << "points:  (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
+        MY_DEBUG_ONLY( if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
+            cout << "points:  (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl; )
 
         int res = test(sample);
         switch(res)
@@ -206,6 +208,10 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
         case 2:
             buff[(h-y-1)*w*3 + x*3 + 2] = 200;
         break;
+        default:
+            buff[(h-y-1)*w*3 + x*3] = 127;
+            buff[(h-y-1)*w*3 + x*3 + 1] = 127;
+            buff[(h-y-1)*w*3 + x*3 + 2] = 127;
         }
     }
 
@@ -217,14 +223,14 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     //ofstream f_bmp("result_all.bmp", ios::out | ios::binary);
     fstream f_bmp_all("result_all.bmp", ios::out | ios::binary);
     f_bmp_all.write((const char*)&bmpHeader, sizeof(bmpHeader));
-    memset(buff, 127, bmpHeader.SizeImage);
+    memset(buff, 0, bmpHeader.SizeImage);
 
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
         {
-            if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
-                cout << "all: (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
+            MY_DEBUG_ONLY (if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
+                cout << "all: (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl; )
 
             m(0) = x-100;
             m(1) = y-100;
@@ -241,6 +247,10 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
             case 2:
                 buff[(h-y-1)*w*3 + x*3 + 2] = 200;
             break;
+            default:
+                buff[(h-y-1)*w*3 + x*3] = 127;
+                buff[(h-y-1)*w*3 + x*3 + 1] = 127;
+                buff[(h-y-1)*w*3 + x*3 + 2] = 127;
             }
         }
     }
