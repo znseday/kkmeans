@@ -69,24 +69,24 @@ void Task::GenRealData(const std::string &fn)
 {
     ofstream f(fn);
     double x, y;
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 120; ++i)
     {
         x = -100 + rand()/(double)RAND_MAX*200;
         y = -100 + rand()/(double)RAND_MAX*200;
         f << x << ";" << y << endl;
     }
 
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 40; ++i)
     {
-        x = -80 + rand()/(double)RAND_MAX*40;
-        y = -80 + rand()/(double)RAND_MAX*40;
+        x = -80 + rand()/(double)RAND_MAX*20;
+        y = -60 + rand()/(double)RAND_MAX*20;
         f << x << ";" << y << endl;
     }
 
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 40; ++i)
     {
-        x = 40 + rand()/(double)RAND_MAX*40;
-        y = 40 + rand()/(double)RAND_MAX*40;
+        x = 50 + rand()/(double)RAND_MAX*20;
+        y = 70 + rand()/(double)RAND_MAX*20;
         f << x << ";" << y <<  endl;
     }
 }
@@ -122,7 +122,7 @@ void Task::TrainAndDo()
     typedef dlib::matrix<double,2,1> sample_type;
     typedef dlib::radial_basis_kernel<sample_type> kernel_type;
 
-    dlib::kcentroid<kernel_type> kc(kernel_type(0.05),0.005, 8);
+    dlib::kcentroid<kernel_type> kc(kernel_type(0.05), 0.005, 8);
     dlib::kkmeans<kernel_type> test(kc);
 
     vector<sample_type> samples;
@@ -151,4 +151,58 @@ void Task::TrainAndDo()
         int res = test(sample);
         f << x << ";" << y << ";" << res << endl;
     }
+    f.close();
+
+    const int w = 200;
+    const int h = 200;
+    ofstream f_bmp("result_All.bmp", ios::binary);
+    bmpHeaderType bmpHeader;
+    memset(&bmpHeader, 0, sizeof(bmpHeader));
+    bmpHeader.Type = 0x4d42;
+    bmpHeader.OffsetBits = 54;
+    bmpHeader.SizeH = 40;
+    bmpHeader.Width = w;
+    bmpHeader.Height = h;
+    bmpHeader.Planes = 1;
+    bmpHeader.BitCount = 24;
+    bmpHeader.SizeImage = 3*bmpHeader.Width*bmpHeader.Height;
+    bmpHeader.Size = bmpHeader.SizeImage + 54;
+
+    f_bmp.write((const char*)&bmpHeader, sizeof(bmpHeader));
+
+    unsigned char *buff = new unsigned char[bmpHeader.SizeImage];
+    memset(buff, 127, bmpHeader.SizeImage);
+
+//    for (auto & sample : samples)
+//    {
+//        int x = 100 + (int)sample(0);
+//        int y = 100 + (int)sample(1);
+//        int res = test(sample);
+//    }
+
+    for (int y = -100; y < h; y++)
+    {
+        for (int x = -100; x < w; y++)
+        {
+            m(0) = x;
+            m(1) = y;
+            int res = test(m);
+            switch(res)
+            {
+            case 0:
+                buff[(h-y-1)*w + x] = 200;
+            break;
+            case 1:
+                buff[(h-y-1)*w + x + 1] = 200;
+            break;
+            case 2:
+                buff[(h-y-1)*w + x + 2] = 200;
+            break;
+            }
+        }
+    }
+
+    f_bmp.write((const char*)&buff, bmpHeader.SizeImage);
+    f_bmp.close();
+    delete[]buff;
 }

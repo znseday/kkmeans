@@ -30,10 +30,27 @@ extern bool IsDebugOutput;
 
 #define MY_DEBUG_ONLY(x) { if(IsDebugOutput) {x}  }
 
-//struct Point
-//{
-//    double x, y;
-//};
+#pragma pack(1)
+struct bmpHeaderType
+{
+    // header file
+    unsigned short Type;   // signature = BM 0x4D42
+    uint32_t  Size;        // file size = 3*H*W+54
+    uint32_t  Reserved;    // 0
+    uint32_t  OffsetBits;  // 54
+    // header info
+    uint32_t  SizeH;          // header info size = 40
+    int32_t   Width;
+    int32_t   Height;
+    uint16_t  Planes;         // 1
+    uint16_t  BitCount;       // 24
+    uint32_t  Compression;    // 0
+    uint32_t  SizeImage;      // image size = 3*W*H
+    int32_t   XPelsPerMeter;  // 0
+    int32_t   YPelsPerMeter;  // 0
+    uint32_t  ColorUsed;      // 0
+    uint32_t  ColorImportant; // 0
+};
 
 class Task
 {
