@@ -65,7 +65,7 @@ public:
 
     void LoadDataFromInputStream();
 
-    void TrainAndDo();
+    void TrainAndDo(double g, double tolerance, unsigned long d_size);
 };
 
 

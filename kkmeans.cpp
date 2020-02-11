@@ -117,12 +117,12 @@ void Task::LoadDataFromInputStream()
     }
 }
 
-void Task::TrainAndDo()
+void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
 {
     typedef dlib::matrix<double,2,1> sample_type;
     typedef dlib::radial_basis_kernel<sample_type> kernel_type;
 
-    dlib::kcentroid<kernel_type> kc(kernel_type(0.05), 0.005, 8);
+    dlib::kcentroid<kernel_type> kc(kernel_type(g), tolerance, d_size);
     dlib::kkmeans<kernel_type> test(kc);
 
     vector<sample_type> samples;
