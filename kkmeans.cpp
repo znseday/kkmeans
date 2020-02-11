@@ -168,6 +168,8 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     bmpHeader.SizeImage = 3*bmpHeader.Width*bmpHeader.Height;
     bmpHeader.Size = bmpHeader.SizeImage + 54;
 
+    MY_DEBUG_ONLY( cout << "bmpHeader.SizeImage = " << bmpHeader.SizeImage << endl;)
+
     unsigned char *buff = new unsigned char[bmpHeader.SizeImage];
 
     fstream f_bmp_points("result_points.bmp", ios::out | ios::binary);
