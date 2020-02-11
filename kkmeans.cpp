@@ -155,7 +155,10 @@ void Task::TrainAndDo()
 
     const int w = 200;
     const int h = 200;
-    ofstream f_bmp("result_All.bmp", ios::out | ios::binary);
+
+
+    //ofstream f_bmp("result_All.bmp", ios::out | ios::binary);
+    fstream f_bmp("result_All.bmp", ios::out | ios::binary);
     bmpHeaderType bmpHeader;
     memset(&bmpHeader, 0, sizeof(bmpHeader));
     bmpHeader.Type = 0x4d42;
