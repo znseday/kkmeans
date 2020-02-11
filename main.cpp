@@ -31,8 +31,8 @@ int main(int argc, const char **argv)
             IsDebugOutput = true;
 
     MY_DEBUG_ONLY(cout << "g = " << g << endl;)
-    MY_DEBUG_ONLY(cout << "tolerance = " << g << endl;)
-    MY_DEBUG_ONLY(cout << "d_size = " << g << endl;)
+    MY_DEBUG_ONLY(cout << "tolerance = " << tolerance << endl;)
+    MY_DEBUG_ONLY(cout << "d_size = " << d_size << endl;)
 
     #if (defined WIN32) || (defined WIN64)
         cout << MY_P_FUNC << endl;                  // for debugging
