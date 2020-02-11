@@ -209,7 +209,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
         }
     }
 
-    f_bmp_points.write((const char*)&buff, bmpHeader.SizeImage);
+    f_bmp_points.write((const char*)buff, bmpHeader.SizeImage);
     //f_bmp_points.flush();
     f_bmp_points.close();
 
@@ -245,7 +245,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
         }
     }
 
-    f_bmp_all.write((const char*)&buff, bmpHeader.SizeImage);
+    f_bmp_all.write((const char*)buff, bmpHeader.SizeImage);
     //f_bmp_all.flush();
     f_bmp_all.close();
 

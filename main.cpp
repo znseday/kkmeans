@@ -26,13 +26,13 @@ int main(int argc, const char **argv)
         sscanf(argv[3], "%i", &d_size);
     }
 
-    MY_DEBUG_ONLY(cout << "g = " << g << endl;)
-    MY_DEBUG_ONLY(cout << "tolerance = " << g << endl;)
-    MY_DEBUG_ONLY(cout << "d_size = " << g << endl;)
-
     for(int i = 1; i < argc; i++)
         if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "d") == 0)
             IsDebugOutput = true;
+
+    MY_DEBUG_ONLY(cout << "g = " << g << endl;)
+    MY_DEBUG_ONLY(cout << "tolerance = " << g << endl;)
+    MY_DEBUG_ONLY(cout << "d_size = " << g << endl;)
 
     #if (defined WIN32) || (defined WIN64)
         cout << MY_P_FUNC << endl;                  // for debugging
