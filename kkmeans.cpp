@@ -112,8 +112,8 @@ void Task::LoadDataFromInputStream()
         sscanf(line.c_str(), "%lf;%lf", &x, &y);
         data.emplace_back(x, y);
 
-        MY_DEBUG_ONLY( cout << line << endl; ) // just echo
-        MY_DEBUG_ONLY( cout << get<0>(data.back()) << " --- " << get<1>(data.back()) << endl; ) // just echo
+        MY_DEBUG_ONLY( cout << "original: " << line << endl; ) // just echo
+        MY_DEBUG_ONLY( cout << "check:    " << get<0>(data.back()) << " --- " << get<1>(data.back()) << endl; ) // just echo
     }
 }
 
@@ -158,7 +158,7 @@ void Task::TrainAndDo()
 
 
     //ofstream f_bmp("result_All.bmp", ios::out | ios::binary);
-    fstream f_bmp("result_All.bmp", ios::out | ios::binary);
+    fstream f_bmp_all("result_All.bmp", ios::out | ios::binary);
     bmpHeaderType bmpHeader;
     memset(&bmpHeader, 0, sizeof(bmpHeader));
     bmpHeader.Type = 0x4d42;
@@ -171,17 +171,10 @@ void Task::TrainAndDo()
     bmpHeader.SizeImage = 3*bmpHeader.Width*bmpHeader.Height;
     bmpHeader.Size = bmpHeader.SizeImage + 54;
 
-    f_bmp.write((const char*)&bmpHeader, sizeof(bmpHeader));
+    f_bmp_all.write((const char*)&bmpHeader, sizeof(bmpHeader));
 
     unsigned char *buff = new unsigned char[bmpHeader.SizeImage];
     memset(buff, 127, bmpHeader.SizeImage);
-
-//    for (auto & sample : samples)
-//    {
-//        int x = 100 + (int)sample(0);
-//        int y = 100 + (int)sample(1);
-//        int res = test(sample);
-//    }
 
     for (int y = 0; y < h; y++)
     {
@@ -205,8 +198,38 @@ void Task::TrainAndDo()
         }
     }
 
-    f_bmp.write((const char*)&buff, bmpHeader.SizeImage);
-    f_bmp.flush();
-    f_bmp.close();
+    f_bmp_all.write((const char*)&buff, bmpHeader.SizeImage);
+    f_bmp_all.flush();
+    f_bmp_all.close();
+
+
+    fstream f_bmp_points("result_Points.bmp", ios::out | ios::binary);
+    memset(buff, 127, bmpHeader.SizeImage);
+
+    f_bmp_points.write((const char*)&bmpHeader, sizeof(bmpHeader));
+
+    for (auto & sample : samples)
+    {
+        int x = 100 + (int)sample(0);
+        int y = 100 + (int)sample(1);
+        int res = test(sample);
+        switch(res)
+        {
+        case 0:
+            buff[(h-y-1)*w + x] = 200;
+        break;
+        case 1:
+            buff[(h-y-1)*w + x + 1] = 200;
+        break;
+        case 2:
+            buff[(h-y-1)*w + x + 2] = 200;
+        break;
+        }
+    }
+
+    f_bmp_points.write((const char*)&buff, bmpHeader.SizeImage);
+    f_bmp_points.flush();
+    f_bmp_points.close();
+
     delete[]buff;
 }
