@@ -190,7 +190,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
             cout << "y > 199" << endl;
 
         if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
-            cout << "(h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
+            cout << "points:  (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
 
         int res = test(sample);
         switch(res)
@@ -219,10 +219,10 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
 
     for (int y = 0; y < h; y++)
     {
-        for (int x = 0; x < w; y++)
+        for (int x = 0; x < w; x++)
         {
             if ( (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage )
-                cout << "(h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
+                cout << "all: (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl;
 
             m(0) = x-100;
             m(1) = y-100;
@@ -246,9 +246,6 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
     f_bmp_all.write((const char*)&buff, bmpHeader.SizeImage);
     f_bmp_all.flush();
     f_bmp_all.close();
-
-
-
 
     delete[]buff;
 }
