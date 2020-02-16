@@ -30,7 +30,8 @@ extern bool IsDebugOutput;
 
 #define MY_DEBUG_ONLY(x) { if(IsDebugOutput) {x}  }
 
-#pragma pack(1)
+//#pragma pack(1)
+#pragma pack(push, 1)
 struct bmpHeaderType
 {
     // header file
@@ -51,7 +52,7 @@ struct bmpHeaderType
     uint32_t  ColorUsed;      // 0
     uint32_t  ColorImportant; // 0
 };
-
+#pragma pack(pop)
 
 class Task
 {
@@ -66,8 +67,10 @@ public:
 
     void LoadDataFromInputStream();
 
-    void TrainAndDo(double g, double tolerance, unsigned long d_size);
+    void TrainAndDo(int nClusters, double g, double tolerance, unsigned long d_size);
 };
+
+void ClusterToRGB(int iCluster, int nClusters, unsigned char &r, unsigned char &g, unsigned char &b);
 
 
 

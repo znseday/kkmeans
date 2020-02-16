@@ -117,7 +117,7 @@ void Task::LoadDataFromInputStream()
     }
 }
 
-void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
+void Task::TrainAndDo(int nClusters, double g, double tolerance, unsigned long d_size)
 {
     typedef dlib::matrix<double,2,1> sample_type;
     typedef dlib::radial_basis_kernel<sample_type> kernel_type;
@@ -137,8 +137,8 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
         samples.push_back(m);
     }
 
-    test.set_number_of_centers(3);
-    pick_initial_centers(3, initial_centers, samples, test.get_kernel());
+    test.set_number_of_centers(nClusters);
+    pick_initial_centers(nClusters, initial_centers, samples, test.get_kernel());
 
     test.train(samples, initial_centers);
 
@@ -177,6 +177,7 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
 
     f_bmp_points.write((const char*)&bmpHeader, sizeof(bmpHeader));
 
+    unsigned char rc, gc, bc;
     for (auto & sample : samples)
     {
         int x = 100 + (int)sample(0);
@@ -197,22 +198,28 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
             cout << "points:  (h-y-1)*w*3 + x*3 + 2 > bmpHeader.SizeImage" << endl; )
 
         int res = test(sample);
-        switch(res)
-        {
-        case 0:
-            buff[(h-y-1)*w*3 + x*3] = 200;
-        break;
-        case 1:
-            buff[(h-y-1)*w*3 + x*3 + 1] = 200;
-        break;
-        case 2:
-            buff[(h-y-1)*w*3 + x*3 + 2] = 200;
-        break;
-        default:
-            buff[(h-y-1)*w*3 + x*3] = 127;
-            buff[(h-y-1)*w*3 + x*3 + 1] = 127;
-            buff[(h-y-1)*w*3 + x*3 + 2] = 127;
-        }
+        ClusterToRGB(res, nClusters, rc, gc, bc);
+
+        buff[(h-y-1)*w*3 + x*3] = bc;
+        buff[(h-y-1)*w*3 + x*3 + 1] = gc;
+        buff[(h-y-1)*w*3 + x*3 + 2] = rc;
+
+//        switch(res)
+//        {
+//        case 0:
+//            buff[(h-y-1)*w*3 + x*3] = 200;
+//        break;
+//        case 1:
+//            buff[(h-y-1)*w*3 + x*3 + 1] = 200;
+//        break;
+//        case 2:
+//            buff[(h-y-1)*w*3 + x*3 + 2] = 200;
+//        break;
+//        default:
+//            buff[(h-y-1)*w*3 + x*3] = 127;
+//            buff[(h-y-1)*w*3 + x*3 + 1] = 127;
+//            buff[(h-y-1)*w*3 + x*3 + 2] = 127;
+//        }
     }
 
     f_bmp_points.write((const char*)buff, bmpHeader.SizeImage);
@@ -233,23 +240,28 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
             m(0) = x-100;
             m(1) = y-100;
             int res = test(m);
+            ClusterToRGB(res, nClusters, rc, gc, bc);
 
-            switch(res)
-            {
-            case 0:
-                buff[(h-y-1)*w*3 + x*3] = 200;
-            break;
-            case 1:
-                buff[(h-y-1)*w*3 + x*3 + 1] = 200;
-            break;
-            case 2:
-                buff[(h-y-1)*w*3 + x*3 + 2] = 200;
-            break;
-            default:
-                buff[(h-y-1)*w*3 + x*3] = 127;
-                buff[(h-y-1)*w*3 + x*3 + 1] = 127;
-                buff[(h-y-1)*w*3 + x*3 + 2] = 127;
-            }
+            buff[(h-y-1)*w*3 + x*3] = bc;
+            buff[(h-y-1)*w*3 + x*3 + 1] = gc;
+            buff[(h-y-1)*w*3 + x*3 + 2] = rc;
+
+//            switch(res)
+//            {
+//            case 0:
+//                buff[(h-y-1)*w*3 + x*3] = 200;
+//            break;
+//            case 1:
+//                buff[(h-y-1)*w*3 + x*3 + 1] = 200;
+//            break;
+//            case 2:
+//                buff[(h-y-1)*w*3 + x*3 + 2] = 200;
+//            break;
+//            default:
+//                buff[(h-y-1)*w*3 + x*3] = 127;
+//                buff[(h-y-1)*w*3 + x*3 + 1] = 127;
+//                buff[(h-y-1)*w*3 + x*3 + 2] = 127;
+//            }
         }
     }
 
@@ -259,3 +271,72 @@ void Task::TrainAndDo(double g, double tolerance, unsigned long d_size)
 
     delete[]buff;
 }
+
+void ClusterToRGB(int iCluster, int nClusters, unsigned char &r, unsigned char &g, unsigned char &b)
+{
+    double H = iCluster/(double)nClusters*300.0; // from red up to magenta
+    //double S = 85;
+    //double V = 100;
+
+    double Sa, Va, Hu, F, P, Q, T, sR, sG, sB;
+    int I;
+
+    Sa = 0.85; // S = 85;
+    Va = 1.0;  // V = 100;
+    Hu = H/60.0;
+
+    I = (int)Hu;
+    F = Hu - I;
+    P = Va*(1 - Sa);
+    Q = Va*(1 - Sa*F);
+    T = Va*(1 - Sa*(1 - F));
+    switch(I)
+    {
+        case 0:
+            sR = Va;
+            sG = T;
+            sB = P;
+            break;
+        case 1:
+            sR = Q;
+            sG = Va;
+            sB = P;
+            break;
+        case 2:
+            sR = P;
+            sG = Va;
+            sB = T;
+            break;
+        case 3:
+            sR = P;
+            sG = Q;
+            sB = Va;
+            break;
+        case 4:
+            sR = T;
+            sG = P;
+            sB = Va;
+            break;
+        case 5:
+            sR = Va;
+            sG = P;
+            sB = Q;
+            break;
+        default:
+            sR = sG = sB = 0.0;
+    }
+
+    r = (unsigned char)(sR*255.99999999);
+    g = (unsigned char)(sG*255.99999999);
+    b = (unsigned char)(sB*255.99999999);
+}
+
+
+
+
+
+
+
+
+
+
